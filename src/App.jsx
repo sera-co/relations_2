@@ -30,14 +30,44 @@ const initialProducts = [
 ];
 
 function App() {
+  const [products, setProducts] = useState(initialProducts);
 
+  const handleRatingSubmit = (productId, newRating) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.id === productId
+          ? {
+              ...product,
+              avgRating:
+                (product.avgRating * product.totalRatings + newRating) /
+                (product.totalRatings + 1),
+              totalRatings: product.totalRatings + 1,
+            }
+          : product
+      )
+    );
+  };
  
 
   return (
-    <div>
-     {/* code here */}
+    <div style={styles.container}>
+      <h1 style={styles.heading}>Product Ratings</h1>
+      <div style={styles.grid}>
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onRatingSubmit={handleRatingSubmit}
+          />
+        ))}
+      </div>
     </div>
   );
 }
+const styles = {
+  container: { textAlign: "center", padding: "20px", fontFamily: "Arial, sans-serif" },
+  heading: { fontSize: "2rem", marginBottom: "20px" },
+  grid: { display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "20px" },
+};
 
 export default App;
